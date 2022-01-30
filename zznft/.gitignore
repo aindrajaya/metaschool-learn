@@ -7,3 +7,7 @@ typechain
 #Hardhat files
 cache
 artifacts
+
+#Lock files
+package-lock.json
+yarn.lock
