@@ -144,10 +144,48 @@ In the above code in function main, we get the contract by using its name Greete
 ====
 ## 2. Hello World NFT
 (https://metaschool.so/courses/how-to-write-a-smart-contract-and-mint-elon-musk-nft-on-opensea/lesson/aca9bde1-dc24-406f-8f12-ed26eeb545d2)
-Creating and Elon Musk NFT locally
+--> Creating and Elon Musk NFT locally
 In the contracts folder, create a new file named Elon.sol. This is your new contract file.
 ```sol
-// SPDX-License-Identifier: UNLICENSED
-pragma
+// SPDX-License-Identifier: UNLICENSED\
+//Notes 1: this is the version of the solidity we are using in the contract
+pragma solidity ^0..8.0;
 
+//Notes 2: This is a given to us by hardhat to debug our code. It is very helpful in local development
+import "hardhat/console.sol";
+
+contract ZzNFT{
+  //Notes 3: This is our NFT contract and it has a constructor. As soon as the contract is deployed, the constructor is called and we will see a message on terminal. All these to the console log.
+
+  constructor(){
+    console.log("This is the Zizou NFT contract!!!!!")
+  }
+}
 ```
+I have explained everything in the commends above. Now let's edit our scripts file to call this a contract. Also, you should know that for every contract you write, you must create a different contract file. This is the general convention used, it makes easy to manage the code and avoid coding mishaps!
+First things first, I will renamve the `sample-scripts.js` file to `run.js` and then I will make some changes to the file. You can go ahead and copy them.
+```js
+const hre = require("hardhat");
+
+async function main(){
+  // Notes 4: We get the contract do deploy
+  const ZzNFT = await hre.ethers.getContractFactory("ZzNFT");
+  const elon = await ZzNFT.deploy();
+
+  await elon.deployed();
+
+  console.log("ZizouNFT deployed to: ", elon.address);
+}
+
+main()
+  .then(() => process.exit(0))
+  .catch((error) => {
+    console.error(error);
+    process.exit(1);
+  });
+```
+The above code is almost same as our Greeter script. But I have made some changes. Now I am calling it ZzNFT which is our contract name and then deploying it. Once the contract is deployed, we will see the constructor message on scereen and the address where the contract is deployed to.
+```bash
+Compiling 1 file with 0.8.4Solidity compilation finished successfullyThis is my Elon Musk NFT contract!!Elon NFT deployed to: 0x5FbDB2315678afecb367f032d93F642f64180aa3
+```
+🎉BOOOOMM!! Your first NFT contract is deployed. Give yourself a pat on the back.
