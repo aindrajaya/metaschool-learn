@@ -259,3 +259,53 @@ The NFT ID 1 has been minted to 0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
 And there weeee gooo! Congratulations, using OpenZeppelin ERC721 contract, you successfully created a contract, deployed it on blockchain and then called a function of that contract too. You should be proud of yourself. Now you must be wondering, ‘Fatima! I have been doing everything on my console, when can I see my ElonMusk NFT deployed on real blockchain?’ 
 Well, we're moving to that just now. Gear up! 
 Btw, if you have any questions, please share in the questions channel in our discord.
+====
+--> Adding Image to NFT
+Every NFT has some data linked to it in the form of JSON format that describes the NFT. We call it metadata. This metadata has a special JSON format and the format needs to be followed if we want our NFT to appear properply on platforms like OpenSea, Rarible, etc.
+In the previous lesson, I shared how we wrote 'Hello, world' instead of sharing the Uniform Resource Identifier I mean, the data about the NFT.
+Let's look back at it.
+```sol
+_setTokenURI(newItemId, "Hello, world");
+```
+Now we will use the standard forat required by NFT platforms to describe the data related to the NFT.
+```json
+{
+  "name":"Zinedine Zidane",
+  "description":"One of the best football/soccer player of the world, and magician playmaker.",
+  "image":"https://64.media.tumblr.com/2ba8e284401d3279646f503da9b9294c/tumblr_n8390eu4JJ1qdcx1no1_500.jpg",
+  "attributes":[
+    {
+      "trait_type":"Zodiac",
+      "value":"Cancer"
+    },
+    {
+      "trait_type":"Height",
+      "value":"6'1"
+    },
+    {
+      "trait_type":"Personality Type",
+      "value":"ISFP"
+    }
+  ]
+}
+```
+We will use `jsonkeeper` website to convert my JSON into linkable URL. Here is the url `https://jsonkeeper.com/b/XTRJ`.
+I will recommend you to kepp your image hosted somewhere safe, the image can't be altered and it doesn't incur your costs. I am being lazy here and found a website where and image was already hosted. Please never do this for your real NFTs. If your server is down or compromised, the NFT will lose its value and important data.
+As NFTSchool describes it.
+"When an NFT is created and linked to a digital file that lives on some other system, how the data is linked is critical. There are a few reasons why traditional HTTP links aren't a great fir for the demands of NFTs"
+With an HTTP address like:
+`https://cloud-bucket.provider.com/my-nft.jpg`
+Anyone can fetch the contents of
+`m0nft.jpg`
+, as long as the owner of the sever pays their bills. However, there's no way to guarantee that the contents of the image are the same as they were when the NFT was created. The sever owner can easily replace the image with something different at any time causing the NFT to change its meaning.
+This problems was demonstrated by an artitst who pulled the rug (opens new window) on NFTs he creted by changing their images after htye were minted and sold to others.
+```sol
+_setTokenIds(newItemId, "https://jsonkeeper.com/b/XTRJ");
+```
+Let's deploy our contract now. You will see this output.
+```bash
+Compiling 1 file with 0.8.4
+Solidity compilation finished successfullyThe NFT ID 1 has been minted to 0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+```
+We are reaching the very last part of this project where we will deploy this contract to testnet and then production as well.
+Are you excited? I am very excited!!!!!!!!!
