@@ -189,3 +189,73 @@ The above code is almost same as our Greeter script. But I have made some change
 Compiling 1 file with 0.8.4Solidity compilation finished successfullyThis is my Elon Musk NFT contract!!Elon NFT deployed to: 0x5FbDB2315678afecb367f032d93F642f64180aa3
 ```
 🎉BOOOOMM!! Your first NFT contract is deployed. Give yourself a pat on the back.
+====
+--> Minting an NFT
+So far you have a basic understanding of a smart contract and you have already deployed one too. Now, let's get to minting an NFT for you. We will write detailed NFT contract and for that we wil use OpenZeppelin. Remember you installed; it while setting up your workspace.
+OpenZeppelin is a reusable and secure smart contracts library, which means that you can import this library, inherit the contracts in your project and get started without having to worry security issues and reinventing the wheel. I'd recommend you to check out their official website, read stuff and get to know more.
+For minting NFTs, we will create a basic conract basedf on ERC721- tyhe non-fungible token standard. OpenZeppelin gives us th base ERC721 with all the important functionalities. You can read more about this contract and all functions encapsulated in that contract here. And while you are at it, read all the functions and capabilities that come packaged in this magical library here.
+Since we had already created the `zznft.sol` file. We wil just updated it. Don't worry if you don't get anything. Just copy-paste it and I will explain it step-by-step.
+Now let me explain the code step.
+### Code 1
+```sol
+pragma solidity ^0.8.0;
+```
+This code before is the version of Solidity that we are suing in our contract, so you should make sure that the compiler that you used to run this contract have meet the version requirement or newer.
+### Code 2
+```sol
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol"; \
+import "@openzeppelin/contracts/utils/Counters.sol";
+```
+Here we are importing ERC721URIStorage contract, this contract contains ERC721 contracts. The metadata part of th NFT contract needs to be stored somewhere else. So we are using an extension of base ERC721 contract which can have URI storage.
+We are also importing a library called `Counters.sol`. This is also an OpenZeppelin utility to keep track of NFTs which are to be minted. Let's say our contract has minted 5 NFTs, and now someone makes a call to the contract to mint another NFT. How does the contract keep track that it's the 6th NFT? This hapens via this utility
+### Code 3
+```sol
+contract ZZnft is ERC721URIStorage {
+  using Counters for Counters.Counter;
+  Counters.Counter private _tokenIds;
+
+  constructor() ERC721("ZizouNFT", "ZZ"){}
+}
+```
+Here we are creating a contract called `Zizou` and inheriting `ERC721URIStorage`. As I mentioned earlier, `Counters` is a utility, a library, so we call it differently as you can see form the code. Then we are creating a `private _tokenIds;` counter with default value as 0. By maing it private, no one outside the contract can call it.
+The `constructor` is the first function which is used called when we deploy our contract and all we are doing is specifying ERTC721 and giving it a name `ZizouNFT` and symbol `ZZ`. This name will be reflected in Opensea, Rarible and Etherscan- both the names and syumbol. So `ZizouNFT` is the name of our NFT collection and `ZZ` is the symbol. This constructor function ERC721 is coming from `ERC721URIStorage`. It is not visible here because it is inside this file.
+### Code 4
+```sol
+function minNFT() public returns (uint256){
+  _tokenIds.increment();
+  uint256 newItemId = _tokenIds.contract();
+  _mint(msg.sender, newItemId);
+  _setTokenURI(newItemId, "Zizzouu Goal");
+  console.log("The NFT ID %s has been minted to %s". newItemId, msg.sender);
+  return newItemId;
+}
+```
+This is the function that can be executed externally. See how we have kept its scope public when we are creating this function. This function is not called when the contract is deployed but is called on demand. I have kept it very simple. The function first increments the `_tokenIds` and assigns its value to the `newItemId`.
+Then we call a `_mint` function, that takes the address of the person calling this function and the `current _tokenIds`. And then I call `_setTokenURI` function that takes the `current _tokenIds` and the data of the NFT. So, basically the mint function is storing the address where the NFT needs to be minted to along with the `_tokenIds` ajd `_setTokenURI` function stores `_tokenIds` along with the data associated with it. Now let's take a look at our script and see how do we deploy this project and call this function.
+### Code 5 - Deploy code
+```js
+const {ethers} from "@nomiclabs/hardhat-ethers";
+
+async function main(){
+  const ZZ = await ethers.getContractFactory("ZizouNFT")
+  const zizou = await ZZ.deploy()
+
+  await zizou.deployed();
+  console.log("Zizou NFT deployed to:", zizou.address);
+
+  let txn = await zizou.mintNFT();
+  await txn.wait();
+}
+
+main().catch((error) => {
+  console.error(error);
+  process.exitCode = 1;
+});
+```
+Havew we are added only two or more lines of code. First we wait for the ElonNFT contract to be deployed and once the contract is deployed, we call the mintNFT function to mint the NFT. The NFT currently doesn't have anything. Don't worry, we will get to that flashy stuff later. When you run the script, you will see something like this.
+```bash
+The NFT ID 1 has been minted to 0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+```
+And there weeee gooo! Congratulations, using OpenZeppelin ERC721 contract, you successfully created a contract, deployed it on blockchain and then called a function of that contract too. You should be proud of yourself. Now you must be wondering, ‘Fatima! I have been doing everything on my console, when can I see my ElonMusk NFT deployed on real blockchain?’ 
+Well, we're moving to that just now. Gear up! 
+Btw, if you have any questions, please share in the questions channel in our discord.
